@@ -190,11 +190,11 @@ class Counter extends React.Component {
 
   render() {
     return (
-      <div className="container p-5 border shadow rounded bg-light text-right">
-        <h3>React Calculator 0.5</h3>
-        <p class="text-secondary"><small>Coded by <a href="http://www.vinweb.hu" class="text-secondary">Janos Vincze</a></small></p>
+      <div className="container h-100 p-5 bg-light text-right">
+        <h3>React Calculator</h3>
+        <p className="text-secondary"><small>Coded by <a href="http://www.vinweb.hu" className="text-secondary">Janos Vincze</a></small></p>
         <div className="row">
-          <div className="col alert alert-info text-right">
+          <div className="col alert alert-info text-right pr-2">
             <div className="counter mb-2">{this.state.count}</div>
             <div id="display">{this.state.number}</div>
           </div>

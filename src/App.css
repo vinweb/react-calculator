@@ -1,12 +1,21 @@
 #root {
-  max-width: 340px;
-  margin: 100px auto;
+  width: 100%;
+  height: 100vh;
+  position: relative;
+}
+.container {
+  max-width: 360px;
+  max-height: 640px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 button {
-  margin: 2px;
-  width: 3.5rem;
-  height: 3.5rem;
+  margin: 4px;
+  width: 64px;
+  height: 64px;
 }
 
 #display {
@@ -15,4 +24,9 @@ button {
 
 .counter {
   height: 1rem;
+}
+
+.col {
+  padding-left: 0;
+  padding-right: 0;
 }
