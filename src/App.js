@@ -1,4 +1,5 @@
 import React from 'react';
+import Button from './Button';
 import './App.css';
 import * as math from 'mathjs';
 
@@ -17,19 +18,12 @@ class Counter extends React.Component {
     this.divide = this.divide.bind(this);
     this.decimal = this.decimal.bind(this);
     this.zero = this.zero.bind(this);
-    this.one = this.one.bind(this);
-    this.two = this.two.bind(this);
-    this.three = this.three.bind(this);
-    this.four = this.four.bind(this);
-    this.five = this.five.bind(this);
-    this.six = this.six.bind(this);
-    this.seven = this.seven.bind(this);
-    this.eight = this.eight.bind(this);
-    this.nine = this.nine.bind(this);
+    this.numberConcat = this.numberConcat.bind(this);
     this.regexEndDigit = /\d$/;
-    this.regexEndOperation = /[\-\*\/]$/g;
-    this.regexEndOperationSub = /[\+\*\/]$/g;
-    this.regexEndSubtract = /[\-]$/;
+    this.regexNotDigit = /\D/;
+    this.regexEndOperation = /([-*/])$/g;
+    this.regexEndOperationSub = /([+*/])$/g;
+    this.regexEndSubtract = /([-])$/;
   }
 
   add() {
@@ -101,7 +95,7 @@ class Counter extends React.Component {
 
   equals() {
     this.setState((state) => ({
-      count: math.evaluate(this.state.count).toString(),
+      count: state.count.concat("="),
       number: math.evaluate(this.state.count).toString()
     }));
   }
@@ -120,72 +114,33 @@ class Counter extends React.Component {
     if (this.state.count.charAt(0) !== 0) {
       this.setState((state) => ({
         count: state.count.concat(0),
-        number: state.count.concat(0)
+        number: state.number.concat(0)
       }));
     }
   }
 
-  one() {
-    this.setState((state) => ({
-      count: state.count.concat(1),
-      number: state.count.concat(1)
-    }));
-  }
-
-  two() {
-    this.setState((state) => ({
-      count: state.count.concat(2),
-      number: state.count.concat(2)
-    }));
-  }
-
-  three() {
-    this.setState((state) => ({
-      count: state.count.concat(3),
-      number: state.count.concat(3)
-    }));
-  }
-
-  four() {
-    this.setState((state) => ({
-      count: state.count.concat(4),
-      number: state.count.concat(4)
-    }));
-  }
-
-  five() {
-    this.setState((state) => ({
-      count: state.count.concat(5),
-      number: state.count.concat(5)
-    }));
-  }
-
-  six() {
-    this.setState((state) => ({
-      count: state.count.concat(6),
-      number: state.count.concat(6)
-    }));
-  }
-
-  seven() {
-    this.setState((state) => ({
-      count: state.count.concat(7),
-      number: state.count.concat(7)
-    }));
-  }
-
-  eight() {
-    this.setState((state) => ({
-      count: state.count.concat(8),
-      number: state.count.concat(8)
-    }));
-  }
-
-  nine() {
-    this.setState((state) => ({
-      count: state.count.concat(9),
-      number: state.count.concat(9)
-    }));
+  numberConcat(num) {
+    if (this.state.number === "0") {
+      this.setState((state) => ({
+        number: ""
+      }));
+      this.setState((state) => ({
+        count: state.count.concat(num),
+        number: state.number.concat(num)
+      }));
+    }
+    if (this.regexNotDigit.test(this.state.number)) {
+      this.setState((state) => ({
+        count: state.count.concat(num),
+        number: num
+      }));
+    }
+    if (this.regexEndDigit.test(this.state.number) && this.state.number !== "0") {
+      this.setState((state) => ({
+        count: state.count.concat(num),
+        number: state.number.concat(num)
+      }));
+    }
   }
 
   render() {
@@ -212,27 +167,9 @@ class Counter extends React.Component {
         </div>
         <div className="row">
           <div className="col">
-            <button
-              id="seven"
-              className="btn btn-secondary rounded-circle btn-lg"
-              onClick={this.seven}
-            >
-              7
-            </button>
-            <button
-              id="eight"
-              className="btn btn-secondary rounded-circle btn-lg"
-              onClick={this.eight}
-            >
-              8
-            </button>
-            <button
-              id="nine"
-              className="btn btn-secondary rounded-circle btn-lg"
-              onClick={this.nine}
-            >
-              9
-            </button>
+            <Button digit={"7"} onClick={this.numberConcat} />
+            <Button digit={"8"} onClick={this.numberConcat} />
+            <Button digit={"9"} onClick={this.numberConcat} />
             <button
               id="divide"
               className="btn btn-info rounded-circle btn-lg"
@@ -244,27 +181,9 @@ class Counter extends React.Component {
         </div>
         <div className="row">
           <div className="col">
-            <button
-              id="four"
-              className="btn btn-secondary rounded-circle btn-lg"
-              onClick={this.four}
-            >
-              4
-            </button>
-            <button
-              id="five"
-              className="btn btn-secondary rounded-circle btn-lg"
-              onClick={this.five}
-            >
-              5
-            </button>
-            <button
-              id="six"
-              className="btn btn-secondary rounded-circle btn-lg"
-              onClick={this.six}
-            >
-              6
-            </button>
+            <Button digit={"4"} onClick={this.numberConcat} />
+            <Button digit={"5"} onClick={this.numberConcat} />
+            <Button digit={"6"} onClick={this.numberConcat} />
             <button
               id="multiply"
               className="btn btn-info rounded-circle btn-lg"
@@ -276,27 +195,9 @@ class Counter extends React.Component {
         </div>
         <div className="row">
           <div className="col">
-            <button
-              id="one"
-              className="btn btn-secondary rounded-circle btn-lg"
-              onClick={this.one}
-            >
-              1
-            </button>
-            <button
-              id="two"
-              className="btn btn-secondary rounded-circle btn-lg"
-              onClick={this.two}
-            >
-              2
-            </button>
-            <button
-              id="three"
-              className="btn btn-secondary rounded-circle btn-lg"
-              onClick={this.three}
-            >
-              3
-            </button>
+            <Button digit={"1"} onClick={this.numberConcat} />
+            <Button digit={"2"} onClick={this.numberConcat} />
+            <Button digit={"3"} onClick={this.numberConcat} />
             <button
               id="subtract"
               className="btn btn-info rounded-circle btn-lg"
@@ -342,6 +243,5 @@ class Counter extends React.Component {
     );
   }
 }
-
 
 export default Counter;
