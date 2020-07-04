@@ -1,5 +1,6 @@
 import React from 'react';
 import Button from './Button';
+import Operation from './Operation';
 import './App.css';
 import * as math from 'mathjs';
 
@@ -10,78 +11,91 @@ class Counter extends React.Component {
       count: "",
       number: "0"
     };
+    this.numberConcat = this.numberConcat.bind(this);
+    this.operation = this.operation.bind(this);
+    this.subtract = this.subtract.bind(this);
+    this.zero = this.zero.bind(this);
     this.clear = this.clear.bind(this);
     this.equals = this.equals.bind(this);
-    this.add = this.add.bind(this);
-    this.subtract = this.subtract.bind(this);
-    this.multiply = this.multiply.bind(this);
-    this.divide = this.divide.bind(this);
     this.decimal = this.decimal.bind(this);
-    this.zero = this.zero.bind(this);
-    this.numberConcat = this.numberConcat.bind(this);
     this.regexEndDigit = /\d$/;
-    this.regexNotDigit = /\D/;
+    this.regexNotDigit = /\D$/;
     this.regexEndOperation = /([-*/])$/g;
     this.regexEndOperationSub = /([+*/])$/g;
     this.regexEndSubtract = /([-])$/;
+    this.regexEndEqual = /([=])$/;
+    this.regexEndDot = /([.])$/;
   }
 
-  add() {
+  numberConcat(num) {
+    if (this.state.number.length < 14) {
+      if (this.state.number === "0") {
+        this.setState((state) => ({
+          number: ""
+        }));
+        this.setState((state) => ({
+          count: state.count.concat(num),
+          number: state.number.concat(num)
+        }));
+      }
+      if (this.regexNotDigit.test(this.state.count) && !this.regexEndDot.test(this.state.count)) {
+        this.setState((state) => ({
+          number: ""
+        }));
+        this.setState((state) => ({
+          count: state.count.concat(num),
+          number: num
+        }));
+      }
+      if (this.regexEndDigit.test(this.state.count) && this.state.number !== "0" || this.regexEndDot.test(this.state.count)) {
+        this.setState((state) => ({
+          count: state.count.concat(num),
+          number: state.number.concat(num)
+        }));
+      }
+    }
+  }
+
+  operation(char) {
     if (this.regexEndDigit.test(this.state.number)) {
       this.setState((state) => ({
-        count: state.count.concat("+"),
-        number: "+"
+        count: state.count.concat(char),
       }));
     }
-    if (this.regexEndOperation.test(this.state.number)) {
+    if (this.regexEndEqual.test(this.state.count)) {
+      this.setState((state) => ({
+        count: state.number.concat(char),
+      }));
+    }
+    /* if (this.regexEndOperation.test(this.state.number)) {
       const newCount = this.state.count.slice(0, -1);
       this.setState((state) => ({
-        count: newCount.concat("+"),
-        number: "+"
+        count: newCount.concat(char),
       }));
-    }
+    } */
   }
 
   subtract() {
     if (
-      this.regexEndDigit.test(this.state.number) ||
-      this.regexEndOperationSub.test(this.state.number)
+      this.regexEndDigit.test(this.state.count) ||
+      this.regexEndOperationSub.test(this.state.count)
     ) {
       this.setState((state) => ({
         count: state.count.concat("-"),
-        number: "-"
+      }));
+    }
+    if (this.regexEndEqual.test(this.state.count)) {
+      this.setState((state) => ({
+        count: state.number.concat("-"),
       }));
     }
   }
 
-  multiply() {
-    if (this.regexEndDigit.test(this.state.number)) {
+  zero() {
+    if (this.regexEndDigit.test(this.state.count) && this.state.number !== "0") {
       this.setState((state) => ({
-        count: state.count.concat("*"),
-        number: "*"
-      }));
-    }
-    if (this.regexEndOperation.test(this.state.number)) {
-      const newCount = this.state.count.slice(0, -1);
-      this.setState((state) => ({
-        count: newCount.concat("*"),
-        number: "*"
-      }));
-    }
-  }
-
-  divide() {
-    if (this.regexEndDigit.test(this.state.number)) {
-      this.setState((state) => ({
-        count: state.count.concat("/"),
-        number: "/"
-      }));
-    }
-    if (this.regexEndOperation.test(this.state.number)) {
-      const newCount = this.state.count.slice(0, -1);
-      this.setState((state) => ({
-        count: newCount.concat("/"),
-        number: "/"
+        count: state.count.concat(0),
+        number: state.number.concat(0)
       }));
     }
   }
@@ -105,40 +119,13 @@ class Counter extends React.Component {
     if (regexDecimal.test(this.state.count)) {
       this.setState((state) => ({
         count: state.count.concat("."),
-        number: state.count.concat(".")
+        number: state.number.concat(".")
       }));
     }
-  }
-
-  zero() {
-    if (this.state.count.charAt(0) !== 0) {
-      this.setState((state) => ({
-        count: state.count.concat(0),
-        number: state.number.concat(0)
-      }));
-    }
-  }
-
-  numberConcat(num) {
     if (this.state.number === "0") {
       this.setState((state) => ({
-        number: ""
-      }));
-      this.setState((state) => ({
-        count: state.count.concat(num),
-        number: state.number.concat(num)
-      }));
-    }
-    if (this.regexNotDigit.test(this.state.number)) {
-      this.setState((state) => ({
-        count: state.count.concat(num),
-        number: num
-      }));
-    }
-    if (this.regexEndDigit.test(this.state.number) && this.state.number !== "0") {
-      this.setState((state) => ({
-        count: state.count.concat(num),
-        number: state.number.concat(num)
+        count: state.number.concat("."),
+        number: state.number.concat(".")
       }));
     }
   }
@@ -170,13 +157,7 @@ class Counter extends React.Component {
             <Button digit={"7"} onClick={this.numberConcat} />
             <Button digit={"8"} onClick={this.numberConcat} />
             <Button digit={"9"} onClick={this.numberConcat} />
-            <button
-              id="divide"
-              className="btn btn-info rounded-circle btn-lg"
-              onClick={this.divide}
-            >
-              /
-            </button>
+            <Operation opera={"/"} onClick={this.operation} />
           </div>
         </div>
         <div className="row">
@@ -184,13 +165,7 @@ class Counter extends React.Component {
             <Button digit={"4"} onClick={this.numberConcat} />
             <Button digit={"5"} onClick={this.numberConcat} />
             <Button digit={"6"} onClick={this.numberConcat} />
-            <button
-              id="multiply"
-              className="btn btn-info rounded-circle btn-lg"
-              onClick={this.multiply}
-            >
-              x
-            </button>
+            <Operation opera={"*"} onClick={this.operation} />
           </div>
         </div>
         <div className="row">
@@ -230,13 +205,7 @@ class Counter extends React.Component {
             >
               =
             </button>
-            <button
-              id="add"
-              className="btn btn-info rounded-circle btn-lg"
-              onClick={this.add}
-            >
-              +
-            </button>
+            <Operation opera={"+"} onClick={this.operation} />
           </div>
         </div>
       </div>
